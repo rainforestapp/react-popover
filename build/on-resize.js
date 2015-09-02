@@ -1,5 +1,8 @@
-"use strict";
+'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 exports.on = on;
 exports.off = off;
 var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || function (fn) {
@@ -7,17 +10,18 @@ var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAni
 };
 var cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame || window.clearTimeout;
 var isIE = navigator.userAgent.match(/Trident/);
-var namespace = "__resizeDetector__";
+var namespace = '__resizeDetector__';
 
 exports.addEventListener = on;
 exports.removeEventListener = off;
+
 function on(el, fn) {
 
   /* Window object natively publishes resize events. We handle it as a
   special case here so that users do not have to think about two APIs. */
 
   if (el === window) {
-    window.addEventListener("resize", fn);
+    window.addEventListener('resize', fn);
     return;
   }
 
@@ -29,13 +33,12 @@ function on(el, fn) {
 
 function off(el, fn) {
   if (el === window) {
-    window.removeEventListener("resize", fn);
+    window.removeEventListener('resize', fn);
     return;
   }
   var detector = el[namespace];
-  if (!detector) {
-    return;
-  }var i = detector.listeners.indexOf(fn);
+  if (!detector) return;
+  var i = detector.listeners.indexOf(fn);
   if (i !== -1) detector.listeners.splice(i, 1);
   if (!detector.listeners.length) uninitialize(el);
 }
@@ -53,22 +56,22 @@ function initialize(el) {
   if (isIE) {
     /* We do not support ie8 and below (or ie9 in compat mode).
     Therefore there is no presence of `attachEvent` here. */
-    el.addEventListener("onresize", onResize);
+    el.addEventListener('onresize', onResize);
     detector.destroy = function () {
-      el.removeEventListener("onresize", onResize);
+      el.removeEventListener('onresize', onResize);
     };
   } else {
     (function () {
-      if (getComputedStyle(el).position === "static") {
+      if (getComputedStyle(el).position === 'static') {
         detector.elWasStaticPosition = true;
-        el.style.position = "relative";
+        el.style.position = 'relative';
       }
       var objEl = createElementHack();
-      objEl.onload = function () {
-        this.contentDocument.defaultView.addEventListener("resize", onResize);
+      objEl.onload = function () /* event */{
+        this.contentDocument.defaultView.addEventListener('resize', onResize);
       };
       detector.destroy = function () {
-        if (detector.elWasStaticPosition) el.style.position = "";
+        if (detector.elWasStaticPosition) el.style.position = '';
         // Event handlers will be automatically removed.
         // http://stackoverflow.com/questions/12528049/if-a-dom-element-is-removed-are-its-listeners-also-removed-from-memory
         el.removeChild(objEl);
@@ -79,7 +82,6 @@ function initialize(el) {
   }
 
   function onResize(e) {
-    console.log("onResize");
     /* Keep in mind e.target could be el OR objEl. In this current implementation we
     don't seem to need to know this but its important to not forget e.g. in some future refactoring
     scenario. */
@@ -93,15 +95,11 @@ function initialize(el) {
 }
 
 function createElementHack() {
-  var el = document.createElement("object");
-  el.className = "resize-sensor";
-  el.setAttribute("style", "display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;");
-  el.setAttribute("class", "resize-sensor");
-  el.type = "text/html";
-  el.data = "about:blank";
+  var el = document.createElement('object');
+  el.className = 'resize-sensor';
+  el.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
+  el.setAttribute('class', 'resize-sensor');
+  el.type = 'text/html';
+  el.data = 'about:blank';
   return el;
 }
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-/* event */
